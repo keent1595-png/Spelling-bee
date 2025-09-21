@@ -1,0 +1,199 @@
+# Spell-it-to-Win-it: Roblox-Inspired Spelling Game
+
+## Game Overview
+
+A fun, interactive spelling game where players listen to a word, then rearrange shuffled letters to spell it correctly. The game features Roblox-inspired visuals, pastel colors, a typewriter font, and engaging sound and animation effects.
+
+---
+
+## Features & Functional Specs
+
+### 1. Game Flow
+
+- Player lands on the **Home Page**.
+- Reads **instructions**, can start or exit.
+- On start, the player:
+  - Sees shuffled letters from a chosen word.
+  - Hears the word pronounced (voice).
+  - Has 10 seconds to arrange the letters into the correct word.
+- If correct:
+  - Roblox character reacts happily.
+  - Score increases.
+  - Next word appears (repeat).
+- If incorrect or time runs out:
+  - Roblox character reacts sadly/confused.
+  - Optionally, the correct spelling is shown.
+- Game ends after a set of words (e.g., 10 rounds or all words used).
+- **Final score** and **confetti animation** on completion.
+- Option to replay or go home.
+
+---
+
+### 2. Design & Aesthetics
+
+- **Color Palette:** Pastel baby pink, baby blue, purple.
+- **Font:** Typewriter-style, 2D creative presentation.
+- **Roblox-style 3D character** beside the main screen:
+  - Shows happy/sad/confused animations based on player actions.
+- **Responsive/mobile-friendly** layout.
+- **UI Elements:** Soft, rounded cards/buttons in pastel tones.
+- **Leaderboard:** Simple high-score display (optional).
+
+---
+
+### 3. Sound & Audio
+
+- **Background music:** Cute, soft, lo-fi/dreamy.
+- **Voiceovers:** Pronounce the word at the start of each round.
+- **SFX:**
+  - Chime/sparkle for correct answer.
+  - Subtle negative sound for wrong.
+  - Confetti/celebration sound on game win.
+
+---
+
+### 4. Home Page & Navigation
+
+- **Game Title**
+- **Directions/Instructions** (How to play)
+- **Start Button**
+- **Exit Button** (quits game or closes tab/browser)
+
+---
+
+### 5. In-game UI
+
+- **Shuffled Letters:** Drag & drop or tap-to-select.
+- **Timer:** 10 seconds per word (visual countdown).
+- **Score Tracker**
+- **Hint Button:** 3 uses per game, shows letter in correct position.
+- **Roblox Character:** Gives real-time visual feedback.
+- **Mobile-friendly design:** Touch gestures, responsive layout.
+- **Leaderboard:** (optional, localStorage or online)
+
+---
+
+### 6. Word Bank
+
+#### Hard (7-8 letters):
+- assistance
+- association
+- athlete
+- atmosphere
+- attendance
+- authority
+- bacteria
+- baggage
+- benefited
+- benefiting
+- bicycle
+- biscuit
+
+#### Medium (5-6 letters): *(You may add more words for these levels)*
+
+#### Easy (3-4 letters): *(You may add more words for these levels)*
+
+---
+
+### 7. Extra Features
+
+- **Difficulty Levels:** Easy, Medium, Hard (controls word length).
+- **Hint Button:** Limited to 3 uses per game.
+- **Leaderboard:** Display top scores (local or online database).
+- **Confetti Animation** when game is completed successfully.
+- **Mobile-friendly:** Touch events, responsive layout.
+
+---
+
+## Development Stack Recommendation
+
+- **Frontend:** React (with Vite or CRA), or Vanilla JS if you prefer.
+- **Animations:** CSS3, Framer Motion, or Lottie for confetti/character.
+- **Audio:** Howler.js or native HTML5 audio.
+- **3D/Character:** Use SVGs, PNG sprites, or Three.js for Roblox-style character (start with SVGs for speed).
+- **Voice Pronunciation:** Google Text-to-Speech API, responsivevoice.js, or Web Speech API.
+- **State Management:** React Context or Redux (for score, game state, etc).
+- **Leaderboard:** LocalStorage, or Firebase/Backend (optional).
+
+---
+
+## UI Design Wireframe (Text-based)
+
+```
+[ Home Page ]
+------------------------------------------
+| Spell-it-to-Win-it!                   |
+| [Cute Roblox Avatar]                  |
+| Directions:                           |
+|  - Listen to the word                 |
+|  - Arrange the letters to spell it    |
+|  - Beat the timer!                    |
+| [START]     [EXIT]                    |
+------------------------------------------
+
+[ Game Screen ]
+---------------------------------------------------
+| [Roblox Character (reacts)]   [Timer: 00:09]   |
+| [Score: 2]                                    |
+|                                               |
+|    [ Shuffled letters: B  A  G  G  A  G  E ]  |
+|                                               |
+|   [ ____  ____  ____  ____  ____  ____  ____ ]|
+|                                               |
+| [HINT (2 left)]                               |
+---------------------------------------------------
+
+[ Game Over / Win Screen ]
+----------------------------------------
+|  🎉 Confetti! 🎉                    |
+|  You scored: 8/10!                   |
+|  [Leaderboard] (optional)            |
+|  [Play Again]  [Home]                |
+----------------------------------------
+```
+
+---
+
+## Assets Needed
+
+- Roblox-style character art (happy, sad, confused, idle, celebratory).
+- Pastel UI elements (cards, buttons, backgrounds).
+- Typewriter font (Google Fonts: 'Special Elite' or similar).
+- Background music loop (lo-fi/cute).
+- SFX for correct/incorrect/confetti.
+- Voice files (or use live TTS).
+
+---
+
+## Implementation Suggestions
+
+1. **Start with Home Page & Routing.**
+2. Implement main Game Loop (word shuffle, input, timer, score).
+3. Add Roblox Character and feedback logic.
+4. Integrate voice synthesis for word pronunciation.
+5. Add sound/music.
+6. Add confetti/animation.
+7. Add difficulty, hint logic, and leaderboard.
+8. Make mobile-friendly.
+9. Polish visuals and transitions.
+
+---
+
+## Example Tech Stack
+
+- React + Vite
+- CSS Modules or Styled Components
+- Howler.js (audio)
+- Web Speech API (voice)
+- Lottie (confetti/character)
+- Google Fonts
+
+---
+
+> **Tip:** Start with a simple MVP (home page, game loop, feedback), then add polish, sound, and extras.
+
+---
+
+## Next Steps
+
+Would you like to see a React project skeleton, or get starter code for a specific feature (game loop, character, sound, etc.)?
