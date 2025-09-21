@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Spell-it-to-Win-it!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffd6ec, #caf0f8, #bdb2ff);
+      font-family: 'Special Elite', Courier, monospace;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 420px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 2px 8px rgba(180, 140, 255, 0.16);
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 { color: #bdb2ff; font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .instructions { background: #ffd6ec; border-radius: 12px; padding: 1rem; margin: 1rem 0; }
+    .button-row { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
+    button { font-family: inherit; background: #caf0f8; color: #444; border: none; border-radius: 12px; padding: 0.7rem 2rem; font-size: 1rem; cursor: pointer; box-shadow: 0 2px 8px rgba(180,140,255,0.16); }
+    button:hover { background: #bdb2ff; }
+    .letter-card, .blank-slot { display: inline-block; background: #ffd6ec; border-radius: 10px; box-shadow: 0 2px 8px rgba(180,140,255,0.16); margin: 0.2rem; padding: 0.7rem 1.1rem; font-size: 1.5rem; }
+    .letter-card { cursor: pointer; }
+    .hidden { display: none; }
+    .roblox-avatar { margin: 1rem auto 1rem auto; }
+  </style>
+</head>
+<body>
+  <!-- Home Screen -->
+  <div class="container" id="home-screen">
+    <h1>Spell-it-to-Win-it!</h1>
+    <div class="roblox-avatar"><span id="avatar-emoji">🙂</span></div>
+    <div class="instructions">
+      <h2>How to Play</h2>
+      <ul>
+        <li>Listen to the word</li>
+        <li>Arrange the letters to spell it</li>
+        <li>Beat the timer!</li>
+      </ul>
+    </div>
+    <div class="button-row">
+      <button onclick="startGame()">Start</button>
+      <button onclick="window.close()">Exit</button>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div class="container hidden" id="game-screen">
+    <div class="roblox-avatar"><span id="game-avatar-emoji">🙂</span></div>
+    <div id="timer">Timer: 10</div>
+    <div id="score">Score: 0</div>
+    <div id="letters"></div>
+    <div id="answer"></div>
+    <div class="button-row">
+      <button id="hint-btn" onclick="useHint()">Hint (3 left)</button>
+    </div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div class="container hidden" id="gameover-screen">
+    <h1>🎉 Confetti! 🎉</h1>
+    <p id="final-score"></p>
+    <div class="button-row">
+      <button onclick="startGame()">Play Again</button>
+      <button onclick="goHome()">Home</button>
+    </div>
+  </div>
+
+  <script>
+    // --- Setup ---
+    const words = [
+      "baggage", "bicycle", "biscuit", "athlete", "atmosphere", "bacteria", "attendance"
+    ];
+    let currentWord = "";
+    let shuffled = [];
+    let answer = [];
+    let score = 0;
+    let round = 0;
+    let timer = 10;
+    let timerInterval = null;
+    let hints = 3;
+
+    function shuffleWord(word) {
+      let arr = word.split("");
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function showScreen(id) {
+      document.getElementById("home-screen").classList.add("hidden");
+      document.getElementById("game-screen").classList.add("hidden");
+      document.getElementById("gameover-screen").classList.add("hidden");
+      document.getElementById(id).classList.remove("hidden");
+    }
+
+    function startGame() {
+      score = 0;
+      round = 0;
+      hints = 3;
+      showScreen("game-screen");
+      nextRound();
+    }
+
+    function nextRound() {
+      if (round >= 5) {
+        endGame();
+        return;
+      }
+      currentWord = words[Math.floor(Math.random() * words.length)];
+      shuffled = shuffleWord(currentWord);
+      answer = [];
+      timer = 10;
+      document.getElementById("score").textContent = "Score: " + score;
+      document.getElementById("hint-btn").textContent = `Hint (${hints} left)`;
+      drawLetters();
+      drawAnswer();
+      document.getElementById("game-avatar-emoji").textContent = "🙂";
+      startTimer();
+      round++;
+      speakWord(currentWord);
+    }
+
+    function drawLetters() {
+      const container = document.getElementById("letters");
+      container.innerHTML = "";
+      shuffled.forEach((ch, idx) => {
+        const span = document.createElement("span");
+        span.className = "letter-card";
+        span.textContent = ch;
+        span.onclick = () => pickLetter(idx);
+        container.appendChild(span);
+      });
+    }
+
+    function drawAnswer() {
+      const container = document.getElementById("answer");
+      container.innerHTML = "";
+      for (let i = 0; i < currentWord.length; i++) {
+        const span = document.createElement("span");
+        span.className = "blank-slot";
+        span.textContent = answer[i] || "_";
+        container.appendChild(span);
+      }
+    }
+
+    function pickLetter(idx) {
+      answer.push(shuffled[idx]);
+      shuffled.splice(idx, 1);
+      drawLetters();
+      drawAnswer();
+      if (answer.length === currentWord.length) checkAnswer();
+    }
+
+    function checkAnswer() {
+      stopTimer();
+      if (answer.join("") === currentWord) {
+        score++;
+        document.getElementById("game-avatar-emoji").textContent = "😃";
+        setTimeout(nextRound, 1200);
+      } else {
+        document.getElementById("game-avatar-emoji").textContent = "😕";
+        setTimeout(nextRound, 1200);
+      }
+    }
+
+    function startTimer() {
+      document.getElementById("timer").textContent = "Timer: " + timer;
+      stopTimer();
+      timerInterval = setInterval(() => {
+        timer--;
+        document.getElementById("timer").textContent = "Timer: " + timer;
+        if (timer === 0) {
+          stopTimer();
+          document.getElementById("game-avatar-emoji").textContent = "😢";
+          setTimeout(nextRound, 1200);
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function endGame() {
+      showScreen("gameover-screen");
+      document.getElementById("final-score").textContent = `You scored: ${score}/5!`;
+    }
+
+    function goHome() {
+      showScreen("home-screen");
+      document.getElementById("avatar-emoji").textContent = "🙂";
+    }
+
+    function useHint() {
+      if (hints > 0 && answer.length < currentWord.length) {
+        answer.push(currentWord[answer.length]);
+        // Remove first occurrence of that letter from shuffled
+        const idx = shuffled.indexOf(currentWord[answer.length - 1]);
+        if (idx !== -1) shuffled.splice(idx, 1);
+        hints--;
+        document.getElementById("hint-btn").textContent = `Hint (${hints} left)`;
+        drawLetters();
+        drawAnswer();
+        if (answer.length === currentWord.length) checkAnswer();
+      }
+    }
+
+    // Text-to-Speech using browser API
+    function speakWord(word) {
+      if ('speechSynthesis' in window) {
+        const utter = new SpeechSynthesisUtterance(word);
+        utter.rate = 0.8;
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    // On load, show home screen
+    goHome();
+  </script>
+</body>
+</html>
+
+      
